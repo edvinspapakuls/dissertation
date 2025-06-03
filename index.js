@@ -125,6 +125,8 @@ app.get('/auth/dropbox/callback',
 
 // user login state check
 app.get('/me', (req, res) => {
+  console.log('SESSION:', req.session);
+  console.log('USER:', req.user);
     res.json({
       google: !!req.user?.google,
       microsoft: !!req.user?.microsoft,
