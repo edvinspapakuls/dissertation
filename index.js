@@ -13,6 +13,8 @@ const DropboxOAuth2Strategy = require('passport-dropbox-oauth2').Strategy;
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
+const PORT = process.env.PORT || 8080;
+
 //allow frontend to acces this server
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -419,4 +421,4 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     res.send({ success: true });
   });  
 
-app.listen(8080, () => console.log('Server running...'));
+app.listen(PORT, () => console.log('Server running...'));
