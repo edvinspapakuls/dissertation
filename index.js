@@ -13,6 +13,8 @@ const DropboxOAuth2Strategy = require('passport-dropbox-oauth2').Strategy;
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 8080;
 
 //allow frontend to acces this server
