@@ -20,10 +20,20 @@ app.use(cors({
 }));
 
 //manage user sessions
+// app.use(session({
+//   secret: 'gdrive-onedrive',
+//   resave: false,
+//   saveUninitialized: true
+// }));
 app.use(session({
   secret: 'gdrive-onedrive',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'Lax'
+  }
 }));
 
 app.use(passport.initialize());
