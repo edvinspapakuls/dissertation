@@ -134,7 +134,12 @@ passport.deserializeUser((obj, done) => {
 
 
 // google route callbacks
-app.get('/auth/google', passport.authenticate('google'));
+// app.get('/auth/google', passport.authenticate('google'));
+app.get('/auth/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'https://www.googleapis.com/auth/drive.file']
+  })
+);
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => res.redirect('http://localhost:3000')
