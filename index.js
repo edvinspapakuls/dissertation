@@ -22,10 +22,19 @@ app.use(cors({
 }));
 
 //manage user sessions
+const Redis = require('ioredis');
+const RedisStore = require('connect-redis')(session);
+const redisClient = new Redis('redis://default:hYEJmTXrqDgQdMSWdSSYM7abZUMVROWh@redis-13204.c338.eu-west-2-1.ec2.redns.redis-cloud.com:13204');
 app.use(session({
+  store: new RedisStore({ client: redisClient }),
   secret: 'gdrive-onedrive',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None'
+  }
 }));
 
 app.use(passport.initialize());
