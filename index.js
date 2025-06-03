@@ -13,8 +13,6 @@ const DropboxOAuth2Strategy = require('passport-dropbox-oauth2').Strategy;
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
-app.set('trust proxy', 1);
-
 const PORT = process.env.PORT || 8080;
 
 //allow frontend to acces this server
@@ -24,22 +22,11 @@ app.use(cors({
 }));
 
 //manage user sessions
-// app.use(session({
-//   secret: 'gdrive-onedrive',
-//   resave: false,
-//   saveUninitialized: true
-// }));
 app.use(session({
   secret: 'gdrive-onedrive',
   resave: false,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None'
-  }
+  saveUninitialized: true
 }));
-
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,34 +40,15 @@ const DROPBOX_CLIENT_ID = 'ov0tb7xu40xarbq';
 const DROPBOX_CLIENT_SECRET = 'krda01qu4lu5rwl';
 
 // default google login handler
-// passport.use(new GoogleStrategy({
-//   clientID: GOOGLE_CLIENT_ID,
-//   clientSecret: GOOGLE_CLIENT_SECRET,
-//   callbackURL: 'https://dissertation-pt8o.onrender.com/auth/google/callback',
-//   scope: ['profile', 'https://www.googleapis.com/auth/drive.file'],
-//   passReqToCallback: true
-// }, (req, accessToken, refreshToken, profile, done) => {
-//   const user = req.user || {};
-//   user.google = { accessToken, profile };
-//   done(null, user);
-// }));
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: 'https://dissertation-pt8o.onrender.com/auth/google/callback'
-}, (accessToken, refreshToken, profile, done) => {
-  console.log('🔵 GoogleStrategy called');
-  console.log('🔹 accessToken:', accessToken);
-  console.log('🔹 profile:', profile);
-
-  const user = {
-    google: {
-      accessToken,
-      profile
-    }
-  };
-
-  console.log('🟢 Returning user to done():', user);
+  callbackURL: 'https://dissertation-pt8o.onrender.com/auth/google/callback',
+  scope: ['profile', 'https://www.googleapis.com/auth/drive.file'],
+  passReqToCallback: true
+}, (req, accessToken, refreshToken, profile, done) => {
+  const user = req.user || {};
+  user.google = { accessToken, profile };
   done(null, user);
 }));
 
@@ -120,33 +88,14 @@ passport.use(new DropboxOAuth2Strategy({
     done(null, user);
   }));  
 
-// passport.serializeUser((user, done) => done(null, user));
-// passport.deserializeUser((obj, done) => done(null, obj));
-passport.serializeUser((user, done) => {
-  console.log('🧠 serializeUser:', user);
-  done(null, user);
-});
-
-passport.deserializeUser((obj, done) => {
-  console.log('📦 deserializeUser:', obj);
-  done(null, obj);
-});
-
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
 
 // google route callbacks
-// app.get('/auth/google', passport.authenticate('google'));
-app.get('/auth/google',
-  passport.authenticate('google', {
-    scope: ['profile', 'https://www.googleapis.com/auth/drive.file']
-  })
-);
+app.get('/auth/google', passport.authenticate('google'));
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
-  (req, res) => {
-    console.log('✅ Login session ID:', req.sessionID);
-    console.log('✅ Login user:', req.user);
-    res.redirect('http://localhost:3000');
-  }
+  (req, res) => res.redirect('http://localhost:3000')
 );
 
 // onedrive route callbacks
@@ -165,15 +114,12 @@ app.get('/auth/dropbox/callback',
 
 // user login state check
 app.get('/me', (req, res) => {
-  console.log('📍 /me session ID:', req.sessionID);
-  console.log('📍 req.session:', req.session);
-  console.log('📍 req.user:', req.user);
-  res.json({
-    google: !!req.user?.google,
-    microsoft: !!req.user?.microsoft,
-    dropbox: !!req.user?.dropbox
-  });
-});  
+    res.json({
+      google: !!req.user?.google,
+      microsoft: !!req.user?.microsoft,
+      dropbox: !!req.user?.dropbox
+    });
+  });  
 
 // file uplaod handler
 app.post('/upload', upload.single('file'), async (req, res) => {
