@@ -67,13 +67,21 @@ const DROPBOX_CLIENT_SECRET = 'krda01qu4lu5rwl';
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: 'https://dissertation-pt8o.onrender.com/auth/google/callback',
-  scope: ['profile', 'https://www.googleapis.com/auth/drive.file'],
-  passReqToCallback: true
-}, (req, accessToken, refreshToken, profile, done) => {
-  const user = req.user || {};
-  user.google = { accessToken, profile };
-  return done(null, user);
+  callbackURL: 'https://dissertation-pt8o.onrender.com/auth/google/callback'
+}, (accessToken, refreshToken, profile, done) => {
+  console.log('🔵 GoogleStrategy called');
+  console.log('🔹 accessToken:', accessToken);
+  console.log('🔹 profile:', profile);
+
+  const user = {
+    google: {
+      accessToken,
+      profile
+    }
+  };
+
+  console.log('🟢 Returning user to done():', user);
+  done(null, user);
 }));
 
 // default microsoft onedrive login handler
@@ -112,8 +120,18 @@ passport.use(new DropboxOAuth2Strategy({
     done(null, user);
   }));  
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((obj, done) => done(null, obj));
+// passport.serializeUser((user, done) => done(null, user));
+// passport.deserializeUser((obj, done) => done(null, obj));
+passport.serializeUser((user, done) => {
+  console.log('🧠 serializeUser:', user);
+  done(null, user);
+});
+
+passport.deserializeUser((obj, done) => {
+  console.log('📦 deserializeUser:', obj);
+  done(null, obj);
+});
+
 
 // google route callbacks
 app.get('/auth/google', passport.authenticate('google'));
