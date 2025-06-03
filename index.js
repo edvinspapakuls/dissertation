@@ -56,7 +56,7 @@ passport.use('microsoft', new OAuth2Strategy({
   tokenURL: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
   clientID: MS_CLIENT_ID,
   clientSecret: MS_CLIENT_SECRET,
-  callbackURL: 'http://localhost:5000/auth/microsoft/callback',
+  callbackURL: 'http://ec2-18-171-178-88.eu-west-2.compute.amazonaws.com:5000/auth/microsoft/callback',
   scope: ['https://graph.microsoft.com/Files.ReadWrite', 'offline_access'],
   passReqToCallback: true
 }, async (req, accessToken, refreshToken, params, profile, done) => {
@@ -419,4 +419,4 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     res.send({ success: true });
   });  
 
-app.listen(5000, () => console.log('Server running...'));
+app.listen(8080, () => console.log('Server running...'));
