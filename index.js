@@ -142,7 +142,11 @@ app.get('/auth/google',
 );
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
-  (req, res) => res.redirect('http://localhost:3000')
+  (req, res) => {
+    console.log('✅ Login session ID:', req.sessionID);
+    console.log('✅ Login user:', req.user);
+    res.redirect('http://localhost:3000');
+  }
 );
 
 // onedrive route callbacks
@@ -161,14 +165,15 @@ app.get('/auth/dropbox/callback',
 
 // user login state check
 app.get('/me', (req, res) => {
-  console.log('SESSION:', req.session);
-  console.log('USER:', req.user);
-    res.json({
-      google: !!req.user?.google,
-      microsoft: !!req.user?.microsoft,
-      dropbox: !!req.user?.dropbox
-    });
-  });  
+  console.log('📍 /me session ID:', req.sessionID);
+  console.log('📍 req.session:', req.session);
+  console.log('📍 req.user:', req.user);
+  res.json({
+    google: !!req.user?.google,
+    microsoft: !!req.user?.microsoft,
+    dropbox: !!req.user?.dropbox
+  });
+});  
 
 // file uplaod handler
 app.post('/upload', upload.single('file'), async (req, res) => {
