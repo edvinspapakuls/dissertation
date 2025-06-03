@@ -66,14 +66,11 @@ passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
   callbackURL: 'https://dissertation-pt8o.onrender.com/auth/google/callback',
-  scope: ['profile', 'https://www.googleapis.com/auth/drive.file']
-}, (accessToken, refreshToken, profile, done) => {
-  const user = {
-    google: {
-      accessToken,
-      profile
-    }
-  };
+  scope: ['profile', 'https://www.googleapis.com/auth/drive.file'],
+  passReqToCallback: true
+}, (req, accessToken, refreshToken, profile, done) => {
+  const user = req.user || {};
+  user.google = { accessToken, profile };
   return done(null, user);
 }));
 
