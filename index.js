@@ -41,7 +41,7 @@ const DROPBOX_CLIENT_SECRET = 'krda01qu4lu5rwl';
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: 'http://localhost:5000/auth/google/callback',
+  callbackURL: 'http://ec2-18-171-178-88.eu-west-2.compute.amazonaws.com:5000/auth/google/callback',
   scope: ['profile', 'https://www.googleapis.com/auth/drive.file'],
   passReqToCallback: true
 }, (req, accessToken, refreshToken, profile, done) => {
