@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 8080;
 
 //allow frontend to acces this server
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://dissertation-pt8o.onrender.com',
   credentials: true
 }));
 
