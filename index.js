@@ -51,16 +51,30 @@ const DROPBOX_CLIENT_ID = 'ov0tb7xu40xarbq';
 const DROPBOX_CLIENT_SECRET = 'krda01qu4lu5rwl';
 
 // default google login handler
+// passport.use(new GoogleStrategy({
+//   clientID: GOOGLE_CLIENT_ID,
+//   clientSecret: GOOGLE_CLIENT_SECRET,
+//   callbackURL: 'https://dissertation-pt8o.onrender.com/auth/google/callback',
+//   scope: ['profile', 'https://www.googleapis.com/auth/drive.file'],
+//   passReqToCallback: true
+// }, (req, accessToken, refreshToken, profile, done) => {
+//   const user = req.user || {};
+//   user.google = { accessToken, profile };
+//   done(null, user);
+// }));
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
   callbackURL: 'https://dissertation-pt8o.onrender.com/auth/google/callback',
-  scope: ['profile', 'https://www.googleapis.com/auth/drive.file'],
-  passReqToCallback: true
-}, (req, accessToken, refreshToken, profile, done) => {
-  const user = req.user || {};
-  user.google = { accessToken, profile };
-  done(null, user);
+  scope: ['profile', 'https://www.googleapis.com/auth/drive.file']
+}, (accessToken, refreshToken, profile, done) => {
+  const user = {
+    google: {
+      accessToken,
+      profile
+    }
+  };
+  return done(null, user);
 }));
 
 // default microsoft onedrive login handler
