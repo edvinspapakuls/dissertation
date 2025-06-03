@@ -17,16 +17,27 @@ const PORT = process.env.PORT || 8080;
 
 //allow frontend to acces this server
 app.use(cors({
-  origin: 'https://dissertation-pt8o.onrender.com',
+  origin: 'http://localhost:3000',
   credentials: true
 }));
 
 //manage user sessions
+// app.use(session({
+//   secret: 'gdrive-onedrive',
+//   resave: false,
+//   saveUninitialized: true
+// }));
 app.use(session({
   secret: 'gdrive-onedrive',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None'
+  }
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
